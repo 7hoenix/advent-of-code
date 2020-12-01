@@ -17,16 +17,19 @@ defmodule Prog do
     strings = String.split(raw, "\n")
     as_ints = Enum.map(strings, fn(s) -> String.to_integer(s) end)
     sorted = Enum.sort(as_ints)
-    res = find_it(2020, sorted)
-    # head = List.first(sorted)
-    # tail = List.last(sorted)
-    # rem = List.delete_at(sorted, 0) |> List.delete_at(-1)
-    # res = find_it(2020, head, tail, rem)
-    IO.puts res
+    head = List.first(sorted)
+    tail = List.last(sorted)
+    rem = List.delete_at(sorted, 0) |> List.delete_at(-1)
+    part_1_res = find_it(2020, head, tail, rem)
+    IO.puts part_1_res
+
+    part_2_res = find_it(2020, sorted)
+    IO.puts part_2_res
     :world
   end
 
   # O(n log(n))
+  # Part 1
   def find_it(target, head, tail, rem) do
     # 1000, 2000
     cond do
@@ -44,6 +47,7 @@ defmodule Prog do
   end
 
   # O(n^2 log(n))
+  # Part 2
   def find_it(target, rem) do
     res = rem
     |> Enum.with_index
@@ -58,7 +62,6 @@ defmodule Prog do
   end
 
   def find_it_iter(target, head, tail, invariant, rem) do
-    # 1000, 2000
     cond do
       head == nil || tail == nil ->
         0
