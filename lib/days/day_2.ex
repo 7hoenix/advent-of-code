@@ -26,21 +26,18 @@ defmodule Prog do
   end
 
   def validate_passwords_by_policy(%{ min_required: min_required, max_allowed: max_allowed, required_char: req, password: password } = foo, current_count) do
-    letters_with_counts = Enum.reduce(String.split(password, "", trim: true), Map.new(), &populate_count/2)
-    # IO.puts "----------------"
-    # IO.inspect letters_with_counts
-    # IO.inspect foo
-    if max_allowed >= Map.get(letters_with_counts, req) and Map.get(letters_with_counts, req) >= min_required do
-      # IO.puts "valid"
-      current_count + 1
-    else
-      # IO.puts "invalid"
-      current_count
-    end
-  end
+    p = String.split(password, "", trim: true)
+    value_at_min_index = Enum.at(p, min_required - 1)
+    value_at_max_index = Enum.at(p, max_allowed - 1)
 
-  def populate_count(letter, letters_with_counts) do
-    Map.update(letters_with_counts, letter, 1, fn(count) -> count + 1 end)
+    cond do
+      value_at_min_index == value_at_max_index and value_at_min_index == req ->
+        current_count
+      value_at_max_index == req or value_at_min_index == req ->
+        current_count + 1
+      true ->
+        current_count
+    end
   end
 end
 
