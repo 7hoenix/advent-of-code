@@ -13,7 +13,7 @@ defmodule Prog do
 
   """
   def solve do
-    {:ok, raw} = File.read("input")
+    {:ok, raw} = File.read("data/day_1/input")
     strings = String.split(raw, "\n")
     as_ints = Enum.map(strings, fn(s) -> String.to_integer(s) end)
     sorted = Enum.sort(as_ints)
