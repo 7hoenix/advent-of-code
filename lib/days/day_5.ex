@@ -10,16 +10,14 @@ defmodule Prog do
   def solve do
     {:ok, raw} = File.read("data/day_5")
     final = String.split(raw, "\n")
-              |> Enum.map(&solve_one/1)
-    # count = Enum.reduce(final, 0, fn valid, acc -> if valid, do: acc + 1, else: acc end)
+              |> Enum.map(&extract/1)
+              |> Enum.map(&find_seat_info/1)
     sorted = Enum.sort(final)
+    [h | rem] = sorted
+    part_two = find_seat_part_two(rem, h)
+    IO.inspect part_two
 
     IO.inspect List.last(sorted)
-  end
-
-  def solve_one(boarding_pass) do
-    [extract(boarding_pass)]
-    |> Enum.map(&find_seat_info/1)
   end
 
   def extract(boarding_pass) do
@@ -34,42 +32,30 @@ defmodule Prog do
   end
 
   def find_row(row_info) do
-    mapped = Enum.map(row_info, &fooer/1)
-    ok = Enum.into(mapped, <<>>, fn bit -> <<bit :: 1>> end)
-    <<t::size(7)>> = ok
-
-    # IO.inspect t
-    # IO.inspect ok
-    t
+    extract_decimal_from_bits(row_info, "F", 7)
   end
 
   def find_seat(seat_info) do
-    mapped = Enum.map(seat_info, &barer/1)
-    ok = Enum.into(mapped, <<>>, fn bit -> <<bit :: 1>> end)
-    <<t::size(3)>> = ok
+    extract_decimal_from_bits(seat_info, "L", 3)
+  end
 
-    # IO.inspect t
-    # IO.inspect ok
+  def extract_decimal_from_bits(collection, off_symbol, number_of_bits) do
+    binary = Enum.map(collection, fn x -> if x == off_symbol, do: 0, else: 1 end)
+             |> Enum.into(<<>>, fn bit -> <<bit :: 1>> end)
+    <<t::size(number_of_bits)>> = binary
+
     t
   end
 
+  def find_seat_part_two(sorted, current) do
+    [h | rem] = sorted
 
-  def fooer(id) do
-      if id == "F" do
-        0
-      else
-        1
-      end
-  end
-
-  def barer(id) do
-      if id == "L" do
-        0
-      else
-        1
-      end
+    if current + 1 == h do
+      find_seat_part_two(rem, h)
+    else
+      current + 1
+    end
   end
 end
 
 Prog.solve
-# Prog.solve_one("BBFFBBFRLL")
