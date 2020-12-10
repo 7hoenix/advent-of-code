@@ -9,15 +9,6 @@ defmodule Prog do
 
   def solve do
     {:ok, raw} = File.read("data/day_8")
-    # raw="nop +0
-# acc +1
-# jmp +4
-# acc +3
-# jmp -3
-# acc -99
-# acc +1
-# jmp -4
-# acc +6"
     final = String.split(raw, "\n", trim: true)
             |> Enum.map(&extract/1)
     acc_at_first_loop = find_loop(final, 0, MapSet.new(), 0, -1)
